@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Razorpay API testing</h1>
+    <button id="rzp-button1">Click to Pay</button>
+</body>
+
+</html>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        key: "your_key_id",
+        amount: "1500000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "John Doe Testing",
+        description: "Test Transaction",
+        image: "https://example.com/your_logo",
+        order_id: "order_MRpzBoNwpvu6Pp", //This is a sample Order ID. Pass the `id` obtained in the response of above steps
+        handler: function (response) {
+            console.log("payment Id:- ", response.razorpay_payment_id);
+            console.log("Order Id:- ", response.razorpay_order_id);
+            console.log("Signature:- ", response.razorpay_signature);
+        },
+        prefill: {
+            name: "Demo Testing",
+            email: "abc@gmail.com",
+            contact: "9999999999",
+        },
+        notes: {
+            address: "Bangalore",
+        },
+        theme: {
+            color: "#3399cc",
+        },
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", function (response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+    });
+    document.getElementById("rzp-button1").onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    };
+</script>
+
+
+Follow some simple steps:
+1. Open Postman
+2. Go to Auth:
+    - select `basic auth`
+2. Enter this url in post method `https://api.razorpay.com/v1/orders` and submit.
+3. get order_id form Postman
+4. Paste in script file in the section order_id.
+5. now everything is done.
